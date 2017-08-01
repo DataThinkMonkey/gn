@@ -1,0 +1,97 @@
+#!/bin/bash
+
+#Return to the main menu
+ret(){
+/home/jared/bin/gn
+}
+
+#Option to return to main menu.
+main(){
+read -p "Would you like to return to the main menu?(y/n) " m
+if test "$m" = "y"
+       	then
+		clear
+              	ret
+        else
+                echo "Thank you."
+                exit
+fi
+}
+
+#function to allow user option to open a note and edit or return to the main
+#menu
+open(){
+read -p "Would you like to open one of these notes?(y/n) " r	
+if test "$r" = "y"
+	then
+        	echo " "
+          	read -p "What is the title of your note you would like to edit? " t
+          	geeknote edit --note "$t"
+        else
+		main
+fi
+}
+
+
+echo "Choose an option"
+echo "1) List all your notebooks."
+echo "2) Use vim-geeknote"
+echo "3) List the notes with in a known notebook."
+echo "4) Edit a known note."
+echo "5) Create a new note and begin editing."
+echo " "
+
+read -p "Your Selection: " a
+
+case "$a" in
+1)
+  geeknote notebook-list;
+  read -p "Would you like to view the notes in one of these notebooks? (y/n) " n;
+  if test "$n" = "y"
+    then 
+	read -p "Which notebook would you like to view? " v
+	geeknote find --notebooks "$v"
+	echo " "
+ 	open 	
+    else
+	echo " "
+  	main	
+  fi	
+;;
+
+2)
+vim -c Geeknote
+	;;	
+
+3) 
+  echo " ";
+  read -p "Which notebook would you like view? " v;
+  geeknote find --notebooks "$v";
+  echo " ";
+  open
+  echo " "	
+;;
+
+4) 
+  read -p "What is the name of your file? " n;
+  geeknote edit --note "$n" 
+  echo " ";
+  main
+;;
+
+5) 
+  read -p "What notebook do you want to create your note in? " c;
+  read -p "What is the title of your note? " t;
+  geeknote create --title "$t" --notebook "$c" --content "Enter note detail";
+  geeknote edit --note "$t";
+  echo " ";
+  main
+;;
+
+*) echo "Not a valid selection. Please select again.";
+   ret	
+;;
+esac
+
+
+
